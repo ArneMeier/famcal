@@ -1,0 +1,50 @@
+\documentclass[fontsize=14pt, paper=a3, pagesize, DIV=calc]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=2cm,left=1cm]{geometry}
+
+\usepackage[german]{babel}
+\usepackage[german]{translator} 
+
+\usepackage{tikz}
+\usetikzlibrary{calendar} 
+\def\defyear{2023}
+\def\deffamilysize{4}
+\def\boxsize{\dimexpr(\linewidth-3cm)/\deffamilysize}
+
+
+\begin{document}
+
+\foreach \m in {1,...,12}{
+\pagestyle{empty}
+\noindent\hspace*{2.98cm}\begin{tikzpicture}
+	\foreach \person [count=\personcount] in {Paula, John, Peter, Jackie}{ %%% ENTER NAMES
+		\node[xshift=3cm, draw=black,anchor=west,minimum width=\boxsize,minimum height=1.6em,xshift=\boxsize*(\personcount-1),align=center] {\person};
+	}
+\end{tikzpicture}
+
+\noindent\begin{tikzpicture} 
+	  \calendar [%
+	  dates=\defyear-\m-01 to \defyear-\m-last,%
+	  day list downward,%
+	  day yshift=1.6em,%
+	  month label left vertical,%
+	  every month/.append style={yshift=1em},%
+	  day code={%
+		\node[anchor = east]  {\pgfcalendarweekdayshortname{\pgfcalendarcurrentweekday}};
+		\node[anchor = east, xshift=1.5em] {\tikzdaytext};
+		\foreach \i [count=\icount] in {1,...,\deffamilysize}{
+			\node[xshift=2em, anchor=west,draw=black,minimum width=\boxsize,minimum height=1.6em,xshift=\boxsize*(\icount-1)] {};}
+		},
+	  ]
+      if (Sunday) [red!75!black]
+      if (between=2023-01-30 and 2023-01-31) [green]
+      if (between=2023-03-27 and 2023-04-11) [green]
+      if (between=2023-07-06 and 2023-08-16) [green]
+      if (between=2023-10-16 and 2023-10-30) [green]
+      if (between=2023-12-27 and 2023-12-31) [green];
+\end{tikzpicture}
+\newpage
+}	
+
+ 
+\end{document}
