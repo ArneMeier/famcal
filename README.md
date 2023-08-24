@@ -4,11 +4,24 @@ A family calendar LaTeX package.
 See the LICENSE file for the license details (Mozilla Public License Version 2.0).
 
 ## Manual
+Load the documentclass ``` famcal ```. 
+The current documentclass options are:
 
-1. You need to edit in the document preable the variable \deffamilysize to match the number of people that want to use the calendar. 
-2. Modify also in line 10 \defyear for the right year.
-2. In line 21 you need to enter their names, separated by commas.
-3. In lines 41-45 you need to enter vacation dates and specify in line 14 the correspondig colour.
+ * ```german```: to have the german version for month and week day names. 
+ * ```vacation=colour```: set the vacation colouring to color ```colour```. Default colour is ```green```
+
+Then use the command ```\makeFamCal{year}{names}{vacations}``` which has 3 parameters to draw the calendar:
+
+ * ```year```: Has to be the year of the calendar, e.g., ```2023```.
+ * ```names```: Has to be a comma separated list of the names, e.g., ```Marie, John, Jill, Jack```.
+ * ```vacations```: can be empty. Otherwise it must be of the following form:
+```
+if (between=2023-01-30 and 2023-01-31) [vacation]
+if (between=2023-03-27 and 2023-04-11) [vacation]
+if (between=2023-07-06 and 2023-08-16) [vacation]
+if (between=2023-10-16 and 2023-10-30) [vacation]
+if (between=2023-12-27 and 2023-12-31) [vacation]
+``
 
 Enjoy.
 
