@@ -8,6 +8,7 @@ Load the documentclass ``` famcal ```.
 The current documentclass options are:
 
  * ```german```: to have the german version for month and week day names. 
+ * ```theme-bubbles```: activates the bubbles theme
  * ```vacation=colour```: set the vacation colouring to color ```colour```. Default colour is ```green```
 
 Then use the command ```\makeFamCal{year}{names}{vacations}``` which has 3 parameters to draw the calendar:
@@ -29,7 +30,11 @@ Enjoy.
 ## Whishlist
 
 1. Make adding vacations a bit more comfortable.
-2. Colour / font themes?
+2. Further colour / font themes?
 
-## Screenshot
-![Screenshot of the produced pdf](screenshot.png "Screenshot")
+## Screenshots
+Plain:
+![Screenshot of the produced pdf for plain theme](screenshot.png "Screenshot plain")
+
+Bubbles (with option ```theme-bubbles```):
+![Screenshot of the produced pdf for bubbles theme](theme-bubbles.png "Screenshot bubbles")
