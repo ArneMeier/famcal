@@ -14,6 +14,8 @@
 
 \colorlet{bgdots}{blue!50!black}
 \colorlet{bglightblue}{white!91!blue}
+\colorlet{vacationColor}{red!50!white}
+
 
 \newcommand{\theme}{plain}
 \DeclareOptionX{theme-bubbles}{%
@@ -41,6 +43,66 @@
 \def\boxsize{\dimexpr(\linewidth-3cm)/\deffamilysize}
 
 
+\usepackage{pgfcalendar}
+\usepackage{pgffor}
+\usepackage{xstring} % For string testing
+
+\newcount\startjulian
+\newcount\endjulian
+\newcount\checkjulian
+
+% Boolean flag (default false)
+\newif\ifvacation
+\vacationfalse
+
+% Macro to check if given date is within a given date range (or equals a single date)
+% #1 = date to check (YYYY-MM-DD)
+% #2 = vacation date range or single date (YYYY-MM-DD/YYYY-MM-DD or YYYY-MM-DD) 
+\newcommand{\checkvacation}[2]{% #1 = date, #2 = range or single date
+  \IfStrEq{#2}{}{%
+    % do nothing for empty string
+  }{%
+    \IfSubStr{#2}{/}{%
+      % It's a range
+      \expandafter\splitdaterange#2\relax
+      \pgfcalendardatetojulian{\startdate}{\startjulian}%
+      \pgfcalendardatetojulian{\enddate}{\endjulian}%
+      \pgfcalendardatetojulian{#1}{\checkjulian}%
+      % Inclusive range check
+      \ifnum\checkjulian < \startjulian
+      \else
+        \ifnum\checkjulian > \endjulian
+        \else
+          \global\vacationtrue
+        \fi
+      \fi
+    }{%
+      % It's a single date, compare as strings (robust)
+      \ifx#1#2
+        \global\vacationtrue
+      \fi
+    }%
+  }%
+}
+
+
+
+
+% Macro to split YYYY-MM-DD/YYYY-MM-DD into \startdate and \enddate
+\def\splitdaterange#1/#2\relax{%
+  \def\startdate{#1}%
+  \def\enddate{#2}%
+}
+
+% Macro to process a comma-separated list of date ranges and set \ifvacation
+\newcommand{\checkvacations}[2]{% #1 = date, #2 = list
+  \vacationfalse % reset flag
+  \edef\expandedvaclist{#2}%
+   \foreach \range in \expandedvaclist {%
+    \checkvacation{#1}{\range}%
+  }%
+}
+
 
 % #1 base1 colour of the dots
 % #2 base2 colour of the dots
@@ -61,70 +123,49 @@
 
 \RequirePackage{ifthen}
 % #1 month index
-\newcommand{\bgtheme}[1]{%
-	\ifthenelse{\equal{\theme}{bubbles}}{%
-		\ifthenelse{\equal{#1}{1}}{ % JANUARY
-			\definecolor{blueviolet}{RGB}{83,0,194}
-			\newpagecolor{blueviolet!10!white}
-			\AddToShipoutPictureBG*{\randomdots{blueviolet}{white}}
-		}{}
-		\ifthenelse{\equal{#1}{2}}{ % FEBRUARY
-			\definecolor{icyblue}{RGB}{71,94,119}
-			\newpagecolor{icyblue!10!white}
-			\AddToShipoutPictureBG*{\randomdots{icyblue}{white}}
-		}{}
-		\ifthenelse{\equal{#1}{3}}{ % MARCH
-			\definecolor{turqois}{RGB}{57,220,198}
-			\newpagecolor{turqois!10!white}
-			\AddToShipoutPictureBG*{\randomdots{turqois}{white}}
-		}{}
-		\ifthenelse{\equal{#1}{4}}{ % APRIL
-			\definecolor{coldgreen}{RGB}{0,139,60}
-			\newpagecolor{coldgreen!10!white}
-			\AddToShipoutPictureBG*{\randomdots{coldgreen}{white}}
-		}{}
-		\ifthenelse{\equal{#1}{5}}{ % MAY
-			\definecolor{warmgreen}{RGB}{170,214,136}
-			\newpagecolor{warmgreen!10!white}
-			\AddToShipoutPictureBG*{\randomdots{warmgreen}{white}}
-		}{}
-		\ifthenelse{\equal{#1}{6}}{ % JUNE
-			\definecolor{yellowgreen}{RGB}{200,253,61}
-			\newpagecolor{yellowgreen!10!white}
-			\AddToShipoutPictureBG*{\randomdots{yellowgreen}{white}}
-		}{}
-		\ifthenelse{\equal{#1}{7}}{ % JULY
-			\definecolor{sunshineyellow}{RGB}{255,253,55}
-			\newpagecolor{sunshineyellow!10!white}
-			\AddToShipoutPictureBG*{\randomdots{sunshineyellow}{white}}
-		}{}
-		\ifthenelse{\equal{#1}{8}}{ % AUGUST
-			\definecolor{orangeyellow}{RGB}{253,185,21}
-			\newpagecolor{orangeyellow!10!white}
-			\AddToShipoutPictureBG*{\randomdots{orangeyellow}{white}}
-		}{}
-		\ifthenelse{\equal{#1}{9}}{ % SEPTEMBER
-			\definecolor{autumnorange}{RGB}{238,153,80}
-			\newpagecolor{autumnorange!10!white}
-			\AddToShipoutPictureBG*{\randomdots{autumnorange}{white}}
-		}{}	
-		\ifthenelse{\equal{#1}{10}}{ % OCTOBER
-			\definecolor{orangered}{RGB}{254,68,1}
-			\newpagecolor{orangered!10!white}
-			\AddToShipoutPictureBG*{\randomdots{orangered}{white}}
-		}{}	
-		\ifthenelse{\equal{#1}{11}}{ % NOVEMBER
-			\definecolor{november}{RGB}{190,119,103}
-			\newpagecolor{november!10!white}
-			\AddToShipoutPictureBG*{\randomdots{november}{white}}
-		}{}		
-		\ifthenelse{\equal{#1}{12}}{ % DECEMBER
-			\definecolor{iceturqois}{RGB}{214,221,220}
-			\newpagecolor{iceturqois!10!white}
-			\AddToShipoutPictureBG*{\randomdots{iceturqois}{white}}
-		}{}		
-	}{}
+% Define color names and RGB values for each month
+\def\monthcolorname#1{%
+  \ifcase#1
+    \or blueviolet% 1
+    \or icyblue% 2
+    \or turqois% 3
+    \or coldgreen% 4
+    \or warmgreen% 5
+    \or yellowgreen% 6
+    \or sunshineyellow% 7
+    \or orangeyellow% 8
+    \or autumnorange% 9
+    \or orangered% 10
+    \or november% 11
+    \or iceturqois% 12
+  \fi
 }
+\def\monthcolorrgb#1{%
+  \ifcase#1
+    \or 83,0,194% 1
+    \or 71,94,119% 2
+    \or 57,220,198% 3
+    \or 0,139,60% 4
+    \or 170,214,136% 5
+    \or 200,253,61% 6
+    \or 255,253,55% 7
+    \or 253,185,21% 8
+    \or 238,153,80% 9
+    \or 254,68,1% 10
+    \or 190,119,103% 11
+    \or 214,221,220% 12
+  \fi
+}
+
+
+\newcommand{\bgtheme}[1]{%
+  \ifthenelse{\equal{\theme}{bubbles}}{%
+    \definecolor{\monthcolorname{#1}}{RGB}{\monthcolorrgb{#1}}%
+    \newpagecolor{\monthcolorname{#1}!10!white}%
+    \AddToShipoutPictureBG*{\randomdots{\monthcolorname{#1}}{white}}%
+  }{}%
+}
+
 
 \RequirePackage{pagecolor}
 % #1: year
@@ -135,33 +176,46 @@
 	\foreach \n [count=\famsize] in {#2}{%
 		\xdef\deffamilysize{\famsize}%
 	}
+	\def\vacationlist{#3}
 	
 	\foreach \m in {1,...,12}{
 	\pagestyle{empty}
 	\bgtheme{\m}
-	\noindent\hspace*{2.98cm}\begin{tikzpicture}
+	\noindent\hspace*{2.95cm}\begin{tikzpicture}
 		\foreach \person [count=\personcount] in {#2}{
 			\node[xshift=3cm,fill=white,rounded corners,anchor=west,minimum width=\boxsize,minimum height=1.6em,xshift=\boxsize*(\personcount-1),align=center] {\person};
 		}
 	\end{tikzpicture}
 	
-	\noindent\begin{tikzpicture} 
-		  \calendar [%
-		  dates=\defyear-\m-01 to \defyear-\m-last,%
-		  day list downward,%
-		  day yshift=1.72em,%
-		  month label left vertical,%
-		  every month/.append style={yshift=1em},%
-		  day code={%
-			\node[anchor = east, rounded corners, inner sep=1mm, circle, fill=white, opacity=0.93]  {\pgfcalendarweekdayshortname{\pgfcalendarcurrentweekday}};
-			\node[anchor = east, xshift=1.5em, rounded corners, inner sep=1mm, circle, fill=white, opacity=0.93] {\tikzdaytext};
-			\foreach \i [count=\icount] in {1,...,\deffamilysize}{
-				\node[xshift=2em,anchor=west,draw=black,opacity=0.93,fill=white,minimum width=\boxsize,minimum height=1.72em,xshift=\boxsize*(\icount-1)] {};}
-			},
-		  ]
-	      if (Sunday) [red!75!black]
-	      #3;
-	\end{tikzpicture}
+	\noindent\begin{tikzpicture}
+  \calendar [
+    dates=\defyear-\m-01 to \defyear-\m-last,
+    day list downward,
+    day yshift=1.72em,
+    month label left vertical,
+	month text={\pgfcalendarmonthname{\pgfcalendarcurrentmonth}~\pgfcalendarcurrentyear},
+    every month/.append style={yshift=1em},
+    day code={%
+  % Build date string as YYYY-MM-DD
+  \edef\currentdatestring{\pgfcalendarcurrentyear-\pgfcalendarcurrentmonth-\pgfcalendarcurrentday}%
+  % Check for vacation
+  \checkvacations{\currentdatestring}{\vacationlist}%
+  \ifvacation
+    \def\myfill{vacationColor}
+  \else
+    \def\myfill{white}
+  \fi
+  % Day of week bubble
+  \node[anchor = east, rounded corners, inner sep=0mm, minimum size=0.8cm, circle, fill=\myfill, opacity=0.93]  {\pgfcalendarweekdayshortname{\pgfcalendarcurrentweekday}};
+  % Day number bubble
+  \node[anchor = east, xshift=1.5em, rounded corners, inner sep=0mm,minimum size=0.8cm, circle, fill=\myfill, opacity=0.93] {\tikzdaytext};
+  % Family size boxes
+  \foreach \i [count=\icount] in {1,...,\deffamilysize}{
+    \node[xshift=2em,anchor=west,draw=black,opacity=0.93,fill=white,minimum width=\boxsize,minimum height=1.72em,xshift=\boxsize*(\icount-1)] {};
+  }
+}
+  ];
+\end{tikzpicture}
 	\newpage
 	}	
 }

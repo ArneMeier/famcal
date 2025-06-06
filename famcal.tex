@@ -1,12 +1,13 @@
 \documentclass[german,theme-bubbles]{famcal}
 
 \begin{document}
+% if you do not like sans serif, comment the next line out
+\sffamily
+% define the color for vacation days by yourself
+\colorlet{vacationColor}{blue!50!white}
 
-\makeFamCal{2023}{Paula, John, Peter, Jackie, Jim, Jane}{
-if (between=2023-01-30 and 2023-01-31) [vacation]
-if (between=2023-03-27 and 2023-04-11) [vacation]
-if (between=2023-07-06 and 2023-08-16) [vacation]
-if (between=2023-10-16 and 2023-10-30) [vacation]
-if (between=2023-12-27 and 2023-12-31) [vacation]}
+% you can specify the vacation days in form YYYY-MM-DD,YYYY-MM-DD/YYY-MM-DD and list it.
+% the respective dates in these ranges will be colored with the color defined above.
+\makeFamCal{2025}{Paula, John, Peter, Jackie, Jim, Jane}{2025-01-01,2025-01-10/2025-01-14}
  
-\end{document}
+\end{document} 
