@@ -17,19 +17,16 @@ Then use the command ```\makeFamCal{year}{names}{vacations}``` which has 3 param
  * ```names```: Has to be a comma separated list of the names, e.g., ```Marie, John, Jill, Jack```.
  * ```vacations```: can be empty. Otherwise it must be of the following form:
 ```
-if (between=2023-01-30 and 2023-01-31) [vacation]
-if (between=2023-03-27 and 2023-04-11) [vacation]
-if (between=2023-07-06 and 2023-08-16) [vacation]
-if (between=2023-10-16 and 2023-10-30) [vacation]
-if (between=2023-12-27 and 2023-12-31) [vacation]
+2025-01-01,2025-01-10/2025-01-14
 ```
+Here, possible is a single date as, e.g., `2025-01-01`, or a date range, e.g., `2025-01-10/2025-01-14`. The values have to be comma separated.
 
 Enjoy.
 
 
 ## Whishlist
 
-1. Make adding vacations a bit more comfortable.
+1. Make adding vacations a bit more comfortable. &#x2714;
 2. Further colour / font themes?
 
 ## Screenshots
