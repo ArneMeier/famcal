@@ -1,59 +1,65 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{famcal}[2023/08/24 Family Calendar LaTeX class by Arne Meier]
+\ProvidesClass{famcal}[2023/08/24 Family Calendar LaTeX class by Arne Meier, Version of 2025/09/11]
 
+\LoadClass[fontsize=14pt,a4paper,DIV=20]{scrartcl}
+
+% Color and keyval
+\RequirePackage{xcolor}
+\RequirePackage{xkeyval}
+
+% Page layout and misc
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{pagecolor}
+
+% Language and translation packages
 \RequirePackage{babel}
 \RequirePackage{translator} 
 
-\RequirePackage{xcolor}
-\RequirePackage{xkeyval}
+% TikZ and calendar
 \RequirePackage{tikz}
+\usetikzlibrary{calendar} 
+\RequirePackage{pgfcalendar}
+\RequirePackage{pgffor}
+\RequirePackage{xstring} % For string testing
+
+% aux packages
 \RequirePackage{eso-pic}
+\RequirePackage{ifthen}
+
+% Default colours for vacation etc.
 \colorlet{vacation}{green!75!black}
-
-\DeclareOptionX{vacation}[green]{\colorlet{vacation}{#1}}
-
 \colorlet{bgdots}{blue!50!black}
 \colorlet{bglightblue}{white!91!blue}
 \colorlet{vacationColor}{red!50!white}
+\DeclareOptionX{vacation}[green]{\colorlet{vacation}{#1}}
 
-
+% Theme option
 \newcommand{\theme}{plain}
-\DeclareOptionX{theme-bubbles}{%
+  \DeclareOptionX{theme-bubbles}{%
 	\renewcommand{\theme}{bubbles}
 }
 
+% Pass babel/translator options for german etc.
 \DeclareOptionX{german}{%
 	\PassOptionsToPackage{\CurrentOption}{babel}%
 	\PassOptionsToPackage{\CurrentOption}{translator}%
-}
+  }
 
-\PassOptionsToClass{fontsize=14pt}{scrartcl}
-
-\PassOptionsToPackage{paper=a3, pagesize, DIV=calc}{typearea}
 
 \ProcessOptionsX
 
-\LoadClass{scrartcl}
-
-
-\RequirePackage[utf8]{inputenc}
-\RequirePackage[a4paper,margin=1cm,left=.5cm]{geometry}
-
-\usetikzlibrary{calendar} 
-\def\boxsize{\dimexpr(\linewidth-3cm)/\deffamilysize}
-
-
-\usepackage{pgfcalendar}
-\usepackage{pgffor}
-\usepackage{xstring} % For string testing
-
+% Counters for julian date calculations
 \newcount\startjulian
 \newcount\endjulian
 \newcount\checkjulian
 
-% Boolean flag (default false)
+% Boolean flag for vacation
 \newif\ifvacation
 \vacationfalse
+
+% further dimensions
+\def\boxsize{\dimexpr(\linewidth-3.1cm)/\deffamilysize}
+
 
 % Macro to check if given date is within a given date range (or equals a single date)
 % #1 = date to check (YYYY-MM-DD)
@@ -84,8 +90,6 @@
     }%
   }%
 }
-
-
 
 
 % Macro to split YYYY-MM-DD/YYYY-MM-DD into \startdate and \enddate
@@ -121,7 +125,7 @@
 }
 
 
-\RequirePackage{ifthen}
+
 % #1 month index
 % Define color names and RGB values for each month
 \def\monthcolorname#1{%
@@ -166,8 +170,6 @@
   }{}%
 }
 
-
-\RequirePackage{pagecolor}
 % #1: year
 % #2: person names separated by ","
 % #3: vacations
@@ -179,43 +181,48 @@
 	\def\vacationlist{#3}
 	
 	\foreach \m in {1,...,12}{
-	\pagestyle{empty}
-	\bgtheme{\m}
-	\noindent\hspace*{2.95cm}\begin{tikzpicture}
-		\foreach \person [count=\personcount] in {#2}{
-			\node[xshift=3cm,fill=white,rounded corners,anchor=west,minimum width=\boxsize,minimum height=1.6em,xshift=\boxsize*(\personcount-1),align=center] {\person};
-		}
-	\end{tikzpicture}
-	
-	\noindent\resizebox{\linewidth}{!}{\begin{tikzpicture}
-  \calendar [
-    dates=\defyear-\m-01 to \defyear-\m-last,
-    day list downward,
-    day yshift=1.72em,
-    month label left vertical,
-	month text={\pgfcalendarmonthname{\pgfcalendarcurrentmonth}~\pgfcalendarcurrentyear},
-    every month/.append style={yshift=1em},
-    day code={%
-  % Build date string as YYYY-MM-DD
-  \edef\currentdatestring{\pgfcalendarcurrentyear-\pgfcalendarcurrentmonth-\pgfcalendarcurrentday}%
-  % Check for vacation
-  \checkvacations{\currentdatestring}{\vacationlist}%
-  \ifvacation
-    \def\myfill{vacationColor}
-  \else
-    \def\myfill{white}
-  \fi
-  % Day of week bubble
-  \node[anchor = east, rounded corners, inner sep=0mm, minimum size=0.8cm, circle, fill=\myfill, opacity=0.93]  {\pgfcalendarweekdayshortname{\pgfcalendarcurrentweekday}};
-  % Day number bubble
-  \node[anchor = east, xshift=1.5em, rounded corners, inner sep=0mm,minimum size=0.8cm, circle, fill=\myfill, opacity=0.93] {\tikzdaytext};
-  % Family size boxes
-  \foreach \i [count=\icount] in {1,...,\deffamilysize}{
-    \node[xshift=2em,anchor=west,draw=black,opacity=0.93,fill=white,minimum width=\boxsize,minimum height=1.72em,xshift=\boxsize*(\icount-1)] {};
-  }
+	  \pagestyle{empty}
+	  \bgtheme{\m}
+    \noindent\begin{tikzpicture}
+      \foreach \person [count=\personcount] in {#2} {
+        \node[
+          fill=white,
+          rounded corners,
+          anchor=west,
+          minimum width=\boxsize,
+          minimum height=1.6em,
+          xshift=\boxsize*(\personcount-1)+2em,
+          yshift=1.8em
+        ] {\person}; % 1.8cm above origin
+      }
+    \calendar [
+      dates=\defyear-\m-01 to \defyear-\m-last,
+      day list downward,
+      day yshift=1.6em,
+      month label left vertical,
+      month text={\large\bfseries\pgfcalendarmonthname{\pgfcalendarcurrentmonth}~\pgfcalendarcurrentyear},
+      every month/.append style={yshift=1em},
+      day code={%
+        % Build date string as YYYY-MM-DD
+        \edef\currentdatestring{\pgfcalendarcurrentyear-\pgfcalendarcurrentmonth-\pgfcalendarcurrentday}%       
+        % Check for vacation
+        \checkvacations{\currentdatestring}{\vacationlist}%
+        \ifvacation
+          \def\myfill{vacationColor}
+        \else
+          \def\myfill{white}
+        \fi
+        % Day of week bubble
+        \node[anchor = east, rounded corners, inner sep=0mm, minimum size=0.8cm, circle, fill=\myfill, opacity=0.93]  {\pgfcalendarweekdayshortname{\pgfcalendarcurrentweekday}};
+        % Day number bubble
+        \node[anchor = east, xshift=1.5em, rounded corners, inner sep=0mm,minimum size=0.8cm, circle, fill=\myfill, opacity=0.93] {\tikzdaytext};
+        % Family size boxes
+        \foreach \i [count=\icount] in {1,...,\deffamilysize}{
+          \node[xshift=2em,anchor=west,draw=black,opacity=0.93,fill=white,minimum width=\boxsize,minimum height=1.6em,xshift=\boxsize*(\icount-1)] {};
+        }
 }
   ];
-\end{tikzpicture}}
+\end{tikzpicture}
 	\newpage
 	}	
 }
