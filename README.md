@@ -9,7 +9,8 @@ The current documentclass options are:
 
  * ```german```: to have the german version for month and week day names. 
  * ```theme-bubbles```: activates the bubbles theme
- * ```vacation=colour```: set the vacation colouring to color ```colour```. Default colour is ```green```
+
+You can modify the colours for vacation and/or weekend days by using ```\colorlet{vacation}{your-colour}``` respectively ```\colorlet{weekends}{your-colour}```.
 
 Then use the command ```\makeFamCal{year}{names}{vacations}``` which has 3 parameters to draw the calendar:
 

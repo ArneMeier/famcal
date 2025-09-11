@@ -1,7 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{famcal}[2023/08/24 Family Calendar LaTeX class by Arne Meier, Version of 2025/09/11]
 
-\LoadClass[fontsize=14pt,a4paper,DIV=20]{scrartcl}
 
 % Color and keyval
 \RequirePackage{xcolor}
@@ -27,26 +26,26 @@
 \RequirePackage{ifthen}
 
 % Default colours for vacation etc.
-\colorlet{vacation}{green!75!black}
+\colorlet{vacation}{green!75!white}
+\colorlet{weekends}{red!75!black}
 \colorlet{bgdots}{blue!50!black}
 \colorlet{bglightblue}{white!91!blue}
-\colorlet{vacationColor}{red!50!white}
-\DeclareOptionX{vacation}[green]{\colorlet{vacation}{#1}}
 
 % Theme option
 \newcommand{\theme}{plain}
-  \DeclareOptionX{theme-bubbles}{%
-	\renewcommand{\theme}{bubbles}
+\DeclareOptionX{theme-bubbles}{%
+\renewcommand{\theme}{bubbles}
 }
 
 % Pass babel/translator options for german etc.
 \DeclareOptionX{german}{%
-	\PassOptionsToPackage{\CurrentOption}{babel}%
-	\PassOptionsToPackage{\CurrentOption}{translator}%
-  }
+\PassOptionsToPackage{\CurrentOption}{babel}%
+\PassOptionsToPackage{\CurrentOption}{translator}%
+}
 
+\ProcessOptionsX*
 
-\ProcessOptionsX
+\LoadClass[fontsize=14pt,a4paper,DIV=20]{scrartcl}
 
 % Counters for julian date calculations
 \newcount\startjulian
@@ -208,7 +207,7 @@
         % Check for vacation
         \checkvacations{\currentdatestring}{\vacationlist}%
         \ifvacation
-          \def\myfill{vacationColor}
+          \def\myfill{vacation}
         \else
           \def\myfill{white}
         \fi
@@ -221,7 +220,10 @@
           \node[xshift=2em,anchor=west,draw=black,opacity=0.93,fill=white,minimum width=\boxsize,minimum height=1.6em,xshift=\boxsize*(\icount-1)] {};
         }
 }
-  ];
+  ]
+  if (Saturday) [weekends]
+  if (Sunday)   [weekends]
+  ;
 \end{tikzpicture}
 	\newpage
 	}	
