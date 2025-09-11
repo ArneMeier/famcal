@@ -32,7 +32,7 @@ Enjoy.
 
 ## Screenshots
 Plain:
-![Screenshot of the produced pdf for plain theme](screenshot.png "Screenshot plain")
+![Screenshot of the produced pdf for plain theme](https://github.com/ArneMeier/famcal/blob/main/screenshot.png?raw=true "Screenshot plain")
 
 Bubbles (with option ```theme-bubbles```):
-![Screenshot of the produced pdf for bubbles theme](theme-bubbles.png "Screenshot bubbles")
+![Screenshot of the produced pdf for bubbles theme](https://github.com/ArneMeier/famcal/blob/main/theme-bubbles.png?raw=true "Screenshot bubbles")
