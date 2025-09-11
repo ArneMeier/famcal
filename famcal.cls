@@ -187,7 +187,7 @@
 		}
 	\end{tikzpicture}
 	
-	\noindent\begin{tikzpicture}
+	\noindent\resizebox{\linewidth}{!}{\begin{tikzpicture}
   \calendar [
     dates=\defyear-\m-01 to \defyear-\m-last,
     day list downward,
@@ -215,7 +215,7 @@
   }
 }
   ];
-\end{tikzpicture}
+\end{tikzpicture}}
 	\newpage
 	}	
 }
