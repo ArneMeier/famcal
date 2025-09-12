@@ -24,6 +24,10 @@ Here, possible is a single date as, e.g., `2025-01-01`, or a date range, e.g., `
 
 Enjoy.
 
+## Compatibility
+ * PDFLaTeX
+ * LuaLaTeX (since 2025-09-12)
+
 
 ## Whishlist
 
