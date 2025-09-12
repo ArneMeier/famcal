@@ -24,6 +24,7 @@
 % aux packages
 \RequirePackage{eso-pic}
 \RequirePackage{ifthen}
+\RequirePackage{iftex} % load this package for engine detection
 
 % Default colours for vacation etc.
 \colorlet{vacation}{green!75!white}
@@ -34,13 +35,13 @@
 % Theme option
 \newcommand{\theme}{plain}
 \DeclareOptionX{theme-bubbles}{%
-\renewcommand{\theme}{bubbles}
+  \renewcommand{\theme}{bubbles}
 }
 
 % Pass babel/translator options for german etc.
 \DeclareOptionX{german}{%
-\PassOptionsToPackage{\CurrentOption}{babel}%
-\PassOptionsToPackage{\CurrentOption}{translator}%
+  \PassOptionsToPackage{\CurrentOption}{babel}%
+  \PassOptionsToPackage{\CurrentOption}{translator}%
 }
 
 \ProcessOptionsX*
@@ -57,7 +58,7 @@
 \vacationfalse
 
 % further dimensions
-\def\boxsize{\dimexpr(\linewidth-3.1cm)/\deffamilysize}
+\def\boxsize{\dimexpr(\linewidth-3.2cm)/\deffamilysize}
 
 
 % Macro to check if given date is within a given date range (or equals a single date)
@@ -110,7 +111,11 @@
 % #1 base1 colour of the dots
 % #2 base2 colour of the dots
 \newcommand{\randomdots}[2]{
-\pgfmathsetseed{\number\pdfrandomseed}
+  \ifLuaTeX
+    \directlua{math.randomseed(tex.randomseed)}
+  \else
+    \pgfmathsetseed{\number\pdfrandomseed}
+  \fi
 \begin{tikzpicture}[overlay,remember picture]
 	\foreach \x in {0,...,100}{
 		\pgfmathsetmacro\xrand{20*abs(rand)}
@@ -197,7 +202,7 @@
     \calendar [
       dates=\defyear-\m-01 to \defyear-\m-last,
       day list downward,
-      day yshift=1.6em,
+      day yshift=1.55em,
       month label left vertical,
       month text={\large\bfseries\pgfcalendarmonthname{\pgfcalendarcurrentmonth}~\pgfcalendarcurrentyear},
       every month/.append style={yshift=1em},
@@ -217,7 +222,7 @@
         \node[anchor = east, xshift=1.5em, rounded corners, inner sep=0mm,minimum size=0.8cm, circle, fill=\myfill, opacity=0.93] {\tikzdaytext};
         % Family size boxes
         \foreach \i [count=\icount] in {1,...,\deffamilysize}{
-          \node[xshift=2em,anchor=west,draw=black,opacity=0.93,fill=white,minimum width=\boxsize,minimum height=1.6em,xshift=\boxsize*(\icount-1)] {};
+          \node[xshift=2em,anchor=west,draw=black,opacity=0.93,fill=white,minimum width=\boxsize,minimum height=1.55em,xshift=\boxsize*(\icount-1)] {};
         }
 }
   ]
