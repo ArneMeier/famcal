@@ -9,7 +9,8 @@ The current documentclass options are:
 
  * ```german```: to have the german version for month and week day names. 
  * ```theme-bubbles```: activates the bubbles theme
- * ```vacation=colour```: set the vacation colouring to color ```colour```. Default colour is ```green```
+
+You can modify the colours for vacation and/or weekend days by using ```\colorlet{vacation}{your-colour}``` respectively ```\colorlet{weekends}{your-colour}```.
 
 Then use the command ```\makeFamCal{year}{names}{vacations}``` which has 3 parameters to draw the calendar:
 
@@ -17,24 +18,21 @@ Then use the command ```\makeFamCal{year}{names}{vacations}``` which has 3 param
  * ```names```: Has to be a comma separated list of the names, e.g., ```Marie, John, Jill, Jack```.
  * ```vacations```: can be empty. Otherwise it must be of the following form:
 ```
-if (between=2023-01-30 and 2023-01-31) [vacation]
-if (between=2023-03-27 and 2023-04-11) [vacation]
-if (between=2023-07-06 and 2023-08-16) [vacation]
-if (between=2023-10-16 and 2023-10-30) [vacation]
-if (between=2023-12-27 and 2023-12-31) [vacation]
+2025-01-01,2025-01-10/2025-01-14
 ```
+Here, possible is a single date as, e.g., `2025-01-01`, or a date range, e.g., `2025-01-10/2025-01-14`. The values have to be comma separated.
 
 Enjoy.
 
 
 ## Whishlist
 
-1. Make adding vacations a bit more comfortable.
+1. Make adding vacations a bit more comfortable. &#x2714;
 2. Further colour / font themes?
 
 ## Screenshots
 Plain:
-![Screenshot of the produced pdf for plain theme](screenshot.png "Screenshot plain")
+![Screenshot of the produced pdf for plain theme](https://github.com/ArneMeier/famcal/blob/main/screenshot.png?raw=true "Screenshot plain")
 
 Bubbles (with option ```theme-bubbles```):
-![Screenshot of the produced pdf for bubbles theme](theme-bubbles.png "Screenshot bubbles")
+![Screenshot of the produced pdf for bubbles theme](https://github.com/ArneMeier/famcal/blob/main/theme-bubbles.png?raw=true "Screenshot bubbles")
